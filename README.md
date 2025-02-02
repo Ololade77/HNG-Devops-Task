@@ -103,4 +103,4 @@ Swagger UI documentation: http://127.0.0.1:8000/docs
 
 # Remote Deployment using docker
 
-![Alt text](./images/Screenshot%202025-02-02%20at%2019.20.08.png)
+![Alt text](./images/r.png)
