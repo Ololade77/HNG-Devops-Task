@@ -82,7 +82,7 @@ Run the application using Uvicorn:
 uvicorn main:app --reload
 ```
 
-# Access the API:
+# Access the API: 
 
 Root endpoint: http://127.0.0.1:8000/  
 
@@ -100,4 +100,15 @@ Swagger UI documentation: http://127.0.0.1:8000/docs
 
 # Remote Deployment using docker
 
+
+# Access the API: 
+
+Root endpoint:http://44.206.238.161:8000/  
+
+API endpoint: http://44.206.238.161:8000/api/classify-number?number=371 
+
+
 ![Alt text](./images/r.png)
+
+![Alt text](./images/s.png)
+
