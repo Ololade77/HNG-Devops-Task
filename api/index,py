@@ -1,0 +1,6 @@
+# api/index.py
+from main import app
+from vercel_asgi import VercelASGIHandler
+
+handler = VercelASGIHandler(app)
+
