@@ -1,7 +1,5 @@
 # Number Classification API
 
-The **Number Classification API** is a FastAPI-based web service that accepts a number as input and returns interesting mathematical properties along with a fun fact. The API determines whether the number is prime, perfect, or an Armstrong number, calculates the digit sum, and classifies the number as odd or even. It also retrieves a fun math fact using the Numbers API.
-
 ## Table of Contents
 
 - [Features](#features)
