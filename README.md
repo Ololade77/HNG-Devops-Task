@@ -34,14 +34,13 @@
 - **FastAPI:** For building the API.
 - **Uvicorn:** ASGI server for running the FastAPI app.
 - **Requests:** For HTTP requests to the Numbers API.
-- **Docker:** Containerization
+- **Docker:** Containerization && Deployment
 
 
 ## Project Structure
 
 
-- **main.py:** Contains all the API logic, endpoints, and helper functions.
-- **api/index.py:** Wraps the FastAPI app using `vercel-asgi` for Vercel deployment.
+- **main.py:** Contains all the API logic, endpoints, and helper functions..
 - **static/favicon.ico:** A favicon file to serve for the endpoint `/favicon.ico`.
 - **requirements.txt:** Lists required packages and their versions.
 - **Dockerfile:** Text file containing instructions for building and shipping the source code.
