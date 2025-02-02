@@ -1,7 +1,5 @@
 # Number Classification API
 
-The **Number Classification API** is a FastAPI-based web service that accepts a number as input and returns interesting mathematical properties along with a fun fact. The API determines whether the number is prime, perfect, or an Armstrong number, calculates the digit sum, and classifies the number as odd or even. It also retrieves a fun math fact using the Numbers API.
-
 ## Table of Contents
 
 - [Features](#features)
@@ -36,17 +34,16 @@ The **Number Classification API** is a FastAPI-based web service that accepts a 
 - **FastAPI:** For building the API.
 - **Uvicorn:** ASGI server for running the FastAPI app.
 - **Requests:** For HTTP requests to the Numbers API.
-- **Docker:** For deployment
+- **Docker:** Containerization && Deployment
 
 
 ## Project Structure
 
 
-- **main.py:** Contains all the API logic, endpoints, and helper functions.
-- **api/index.py:** Wraps the FastAPI app using `vercel-asgi` for Vercel deployment.
+- **main.py:** Contains all the API logic, endpoints, and helper functions..
 - **static/favicon.ico:** A favicon file to serve for the endpoint `/favicon.ico`.
 - **requirements.txt:** Lists required packages and their versions.
-- **Dockerfile:** Ship the code and deploy
+- **Dockerfile:** Text file containing instructions for building and shipping the source code.
 
 ## Installation
 
