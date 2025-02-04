@@ -1,111 +1,79 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+import math
 import requests
 
-app = FastAPI(title="Number Classification API")
+app = FastAPI()
 
-# Enable CORS for all origins (customize as needed)
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Allow all origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Mount static directory for serving static files like favicon.ico.
-# Ensure you have created the 'static' folder and placed your favicon.ico inside.
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Root endpoint with a welcome message.
-@app.get("/")
-async def read_root():
-    return {
-        "message": "Welcome to the Number Classification API! Use /api/classify-number?number=<number> to classify a number."
-    }
-
-# Favicon endpoint to serve the favicon.ico file.
-@app.get("/favicon.ico", include_in_schema=False)
-async def favicon():
-    return FileResponse("static/favicon.ico")
-
-def calculate_digit_sum(n: int) -> int:
-    return sum(int(digit) for digit in str(abs(n)))
-
-def is_armstrong(n: int) -> bool:
-    digits = [int(d) for d in str(abs(n))]
-    power = len(digits)
-    return n == sum(d ** power for d in digits)
-
-def is_prime(n: int) -> bool:
-    if n <= 1:
+def is_prime(n):
+    """Check if a number is prime."""
+    if n < 2:
         return False
-    if n <= 3:
-        return True
-    if n % 2 == 0 or n % 3 == 0:
-        return False
-    i = 5
-    while i * i <= n:
-        if n % i == 0 or n % (i + 2) == 0:
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0:
             return False
-        i += 6
     return True
 
-def is_perfect(n: int) -> bool:
-    if n <= 1:
+def is_perfect(n):
+    """Check if a number is a perfect number (sum of its divisors equals itself)."""
+    if n < 2:
         return False
-    divisors_sum = 1
-    i = 2
-    while i * i <= n:
-        if n % i == 0:
-            divisors_sum += i
-            if i != n // i:
-                divisors_sum += n // i
-        i += 1
-    return divisors_sum == n
+    return sum(i for i in range(1, n) if n % i == 0) == n
 
-def fetch_fun_fact(n: int) -> str:
+def is_armstrong(n):
+    """Check if a number is an Armstrong number."""
+    digits = [int(d) for d in str(n)]
+    power = len(digits)
+    return sum(d ** power for d in digits) == n
+
+def digit_sum(n):
+    """Calculate the sum of the digits of a number."""
+    return sum(int(d) for d in str(n))
+
+def get_number_fact(number):
+    """Fetch a fun fact about the number from an external API."""
     try:
-        response = requests.get(f"http://numbersapi.com/{n}/math?json")
+        response = requests.get(f"http://numbersapi.com/{number}")
         if response.status_code == 200:
-            data = response.json()
-            return data.get("text", "No fun fact available.")
-        else:
-            return "No fun fact available."
-    except Exception:
-        return "Error fetching fun fact."
+            return response.text
+    except:
+        return "No fun fact available at the moment."
+    return "No fun fact available."
 
-@app.get("/api/classify-number")
-async def classify_number(number: str = Query(..., description="The number to classify")):
+@app.get("/number/{num}")
+def number_properties(num: int):
+    """Returns interesting properties of a number."""
     try:
-        num = int(number)
+        num = int(num)
     except ValueError:
-        raise HTTPException(
-            status_code=400,
-            detail={"number": number, "error": True}
-        )
-    
-    armstrong = is_armstrong(num)
-    prime = is_prime(num)
-    perfect = is_perfect(num)
-    digit_sum = calculate_digit_sum(num)
-    parity = "even" if num % 2 == 0 else "odd"
+        return {"error": "Invalid number"}
 
     properties = []
-    if armstrong:
+    if is_armstrong(num):
         properties.append("armstrong")
-    properties.append(parity)
+    if num % 2 == 1:
+        properties.append("odd")
+    else:
+        properties.append("even")
 
-    fun_fact = fetch_fun_fact(num)
-
-    return {
+    response = {
         "number": num,
-        "is_prime": prime,
-        "is_perfect": perfect,
+        "is_prime": is_prime(num),
+        "is_perfect": is_perfect(num),
         "properties": properties,
-        "digit_sum": digit_sum,
-        "fun_fact": fun_fact
+        "digit_sum": digit_sum(num),
+        "fun_fact": f"{num} is an Armstrong number because {' + '.join(f'{d}^{len(str(num))}' for d in [int(d) for d in str(num)])} = {num}" if is_armstrong(num) else get_number_fact(num),
     }
+
+    return response
+
 
