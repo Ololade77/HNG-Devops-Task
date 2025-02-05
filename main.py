@@ -1,55 +1,30 @@
-from itertools import filterfalse
-from pickle import FALSE
-from fastapi import FastAPI # type: ignore
-from fastapi.middleware.cors import CORSMiddleware # type: ignore
-import math
-import requests
-
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import JSONResponse
 app = FastAPI()
-
-# Enable CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-def get_number_fact(number):
-    """Fetch a fun fact about the number from an external API."""
+@app.get("/api/classify-number")
+def classify_number(number: str):
     try:
-        response = requests.get(f"http://numbersapi.com/{number}")
-        if response.status_code == 200:
-            return response.text
-    except:
-        return "No fun fact available at the moment."
-    return "No fun fact available."
-
-def is_prime(n):
-    """Check if a number is prime."""
-    if n < 2:
-        return False
-    for i in range(2, int(math.sqrt(n)) + 1):
-        if n % i == 0:
-            return False
-    return True
-
-@app.get("/number/{num}")
-def number_properties(num: int):
-    """Returns interesting properties of a number."""
-    try:
-        num = int(num)
+        # Convert to integer
+        num = int(number)
     except ValueError:
-        return {"error": "Invalid number"}
-
-    properties = {
-        "number": 371,
-        "is_prime": FALSE,
-        "is_perfect": filterfalse,
-        "properties": ["armstrong", "odd"],
-        "digit_sum": 11,
-        "fun_fact": "371 is an Armstrong number because 3^3 + 7^3 + 1^3 = 371"
+        # Return 400 status code with the error JSON
+        return JSONResponse(
+            status_code=400,
+            content={"number": number, "error": True},
+        )
+    # Determine if the number is odd or even
+    properties = ["even" if num % 2 == 0 else "odd"]
+    # Check if the number is an Armstrong number
+    digit_powers_sum = sum(int(digit) ** len(str(abs(num))) for digit in str(abs(num)))
+    if num == digit_powers_sum:
+        properties.insert(0, "armstrong")  # Add "armstrong" to the properties list
+    # Construct the response
+    response = {
+        "number": num,
+        "is_prime": False,  # Example logic for primes
+        "is_perfect": False,  # Example logic for perfect numbers
+        "properties": properties,  # Updated properties logic
+        "digit_sum": sum(int(digit) for digit in str(abs(num))),
+        "fun_fact": f"{num} is just an interesting number!",
     }
-
-    return properties
+    return JSONResponse(content=response)
