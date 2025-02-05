@@ -1,3 +1,5 @@
+from itertools import filterfalse
+from pickle import FALSE
 from fastapi import FastAPI # type: ignore
 from fastapi.middleware.cors import CORSMiddleware # type: ignore
 import math
@@ -43,13 +45,11 @@ def number_properties(num: int):
 
     properties = {
         "number": 371,
-        "is_prime": false,
-        "is_perfect": false,
+        "is_prime": FALSE,
+        "is_perfect": filterfalse,
         "properties": ["armstrong", "odd"],
         "digit_sum": 11,
         "fun_fact": "371 is an Armstrong number because 3^3 + 7^3 + 1^3 = 371"
     }
 
     return properties
-
-
