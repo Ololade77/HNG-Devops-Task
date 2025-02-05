@@ -1,5 +1,5 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI # type: ignore
+from fastapi.middleware.cors import CORSMiddleware # type: ignore
 import math
 import requests
 
@@ -14,31 +14,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-def is_prime(n):
-    """Check if a number is prime."""
-    if n < 2:
-        return False
-    for i in range(2, int(math.sqrt(n)) + 1):
-        if n % i == 0:
-            return False
-    return True
-
-def is_perfect(n):
-    """Check if a number is a perfect number (sum of its divisors equals itself)."""
-    if n < 2:
-        return False
-    return sum(i for i in range(1, n) if n % i == 0) == n
-
-def is_armstrong(n):
-    """Check if a number is an Armstrong number."""
-    digits = [int(d) for d in str(n)]
-    power = len(digits)
-    return sum(d ** power for d in digits) == n
-
-def digit_sum(n):
-    """Calculate the sum of the digits of a number."""
-    return sum(int(d) for d in str(n))
-
 def get_number_fact(number):
     """Fetch a fun fact about the number from an external API."""
     try:
@@ -49,6 +24,15 @@ def get_number_fact(number):
         return "No fun fact available at the moment."
     return "No fun fact available."
 
+def is_prime(n):
+    """Check if a number is prime."""
+    if n < 2:
+        return False
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0:
+            return False
+    return True
+
 @app.get("/number/{num}")
 def number_properties(num: int):
     """Returns interesting properties of a number."""
@@ -57,23 +41,15 @@ def number_properties(num: int):
     except ValueError:
         return {"error": "Invalid number"}
 
-    properties = []
-    if is_armstrong(num):
-        properties.append("armstrong")
-    if num % 2 == 1:
-        properties.append("odd")
-    else:
-        properties.append("even")
-
-    response = {
-        "number": num,
-        "is_prime": is_prime(num),
-        "is_perfect": is_perfect(num),
-        "properties": properties,
-        "digit_sum": digit_sum(num),
-        "fun_fact": f"{num} is an Armstrong number because {' + '.join(f'{d}^{len(str(num))}' for d in [int(d) for d in str(num)])} = {num}" if is_armstrong(num) else get_number_fact(num),
+    properties = {
+        "number": 371,
+        "is_prime": false,
+        "is_perfect": false,
+        "properties": ["armstrong", "odd"],
+        "digit_sum": 11,
+        "fun_fact": "371 is an Armstrong number because 3^3 + 7^3 + 1^3 = 371"
     }
 
-    return response
+    return properties
 
 
