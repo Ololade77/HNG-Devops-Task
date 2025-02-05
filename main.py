@@ -21,10 +21,10 @@ def classify_number(number: str):
     # Construct the response
     response = {
         "number": num,
-        "is_prime": False,  # Example logic for primes
-        "is_perfect": False,  # Example logic for perfect numbers
-        "properties": properties,  # Updated properties logic
-        "digit_sum": sum(int(digit) for digit in str(abs(num))),
-        "fun_fact": f"{num} is just an interesting number!",
+        "is_prime": True if is_prime(num) else False,  # Explicit True/False
+        "is_perfect": True if is_perfect(num) else False,  # Explicit True/False
+        "properties": properties,  # Updated properties list
+        "digit_sum": sum(int(digit) for digit in str(abs(num))),  # Sum of digits
+        "fun_fact": f"{num} is just an interesting number!"
     }
     return JSONResponse(content=response)
